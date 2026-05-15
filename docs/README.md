@@ -1,12 +1,6 @@
-# Documentation DevOps
+# Documentation
 
-## Objectifs
-- Automatiser le déploiement de l’infrastructure
-- Mettre en place une pipeline CI/CD
-- Superviser les services
-- Prévoir PRA/PCA
-
-## Outils pressentis
+## Outils DEVOPS prévu
 - Terraform
 - Ansible
 - GitLab CI ou GitHub Actions
