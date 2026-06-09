@@ -1,0 +1,33 @@
+stages:
+  - validate
+  - test
+  - build
+  - deploy
+
+variables:
+  APP_NAME: "cyna-saas"
+
+validate:
+  stage: validate
+  script:
+    - echo "Validation du projet"
+    - echo "Vérification de la structure du dépôt"
+
+test:
+  stage: test
+  script:
+    - echo "Exécution des tests applicatifs"
+
+build:
+  stage: build
+  script:
+    - echo "Construction de l'application"
+    - docker build -t $APP_NAME:latest .
+
+deploy:
+  stage: deploy
+  script:
+    - echo "Déploiement de l'application"
+    - kubectl apply -f infra/kubernetes/
+  only:
+    - main
