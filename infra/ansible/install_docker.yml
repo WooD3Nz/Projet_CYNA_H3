@@ -1,0 +1,27 @@
+---
+- name: Installation Docker
+  hosts: web,monitoring,logs,devops
+  become: yes
+
+  tasks:
+    - name: Installer dépendances Docker
+      apt:
+        name:
+          - ca-certificates
+          - curl
+          - gnupg
+        state: present
+        update_cache: yes
+
+    - name: Installer Docker
+      apt:
+        name:
+          - docker.io
+          - docker-compose
+        state: present
+
+    - name: Activer Docker
+      service:
+        name: docker
+        state: started
+        enabled: yes
