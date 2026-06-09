@@ -1,0 +1,16 @@
+---
+- name: Sauvegarde des configurations critiques
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Créer dossier backup
+      file:
+        path: /backup/configs
+        state: directory
+
+    - name: Sauvegarder /etc
+      archive:
+        path: /etc
+        dest: "/backup/configs/etc-{{ inventory_hostname }}.tar.gz"
+        format: gz
