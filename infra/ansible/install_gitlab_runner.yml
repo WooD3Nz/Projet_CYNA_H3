@@ -1,0 +1,26 @@
+---
+- name: Installation GitLab Runner
+  hosts: devops
+  become: yes
+
+  tasks:
+    - name: Télécharger script GitLab Runner
+      get_url:
+        url: https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.deb.sh
+        dest: /tmp/gitlab-runner.sh
+        mode: '0755'
+
+    - name: Ajouter dépôt GitLab Runner
+      command: /tmp/gitlab-runner.sh
+
+    - name: Installer GitLab Runner
+      apt:
+        name: gitlab-runner
+        state: present
+        update_cache: yes
+
+    - name: Activer GitLab Runner
+      service:
+        name: gitlab-runner
+        state: started
+        enabled: yes
