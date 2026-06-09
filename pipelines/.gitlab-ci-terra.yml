@@ -1,0 +1,28 @@
+stages:
+  - terraform_validate
+  - terraform_plan
+  - terraform_apply
+
+terraform_validate:
+  stage: terraform_validate
+  script:
+    - cd infra/terraform/azure
+    - terraform init
+    - terraform validate
+
+terraform_plan:
+  stage: terraform_plan
+  script:
+    - cd infra/terraform/azure
+    - terraform plan
+  only:
+    - main
+
+terraform_apply:
+  stage: terraform_apply
+  script:
+    - cd infra/terraform/azure
+    - terraform apply -auto-approve
+  when: manual
+  only:
+    - main
