@@ -1,0 +1,7 @@
+---
+- import_playbook: hardening_base.yml
+- import_playbook: install_docker.yml
+- import_playbook: install_monitoring.yml
+- import_playbook: install_graylog.yml
+- import_playbook: install_gitlab_runner.yml
+- import_playbook: backup_config.yml
