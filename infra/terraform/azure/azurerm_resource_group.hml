@@ -1,0 +1,10 @@
+resource "azurerm_resource_group" "cyna_rg" {
+  name     = "rg-cyna-devops"
+  location = "France Central"
+
+  tags = {
+    Environment = "Production"
+    Project     = "CYNA"
+    ManagedBy   = "Terraform"
+  }
+}
