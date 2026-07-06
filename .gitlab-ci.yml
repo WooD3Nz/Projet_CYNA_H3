@@ -1,0 +1,78 @@
+stages:
+  - validate
+  - terraform_plan
+  - terraform_apply
+  - ansible_check
+  - ansible_deploy
+
+variables:
+  TF_ROOT: "infra/terraform/azure"
+  ANSIBLE_ROOT: "infra/ansible"
+
+before_script:
+  - echo "Démarrage du pipeline DevOps CYNA"
+
+terraform_validate:
+  stage: validate
+  image: hashicorp/terraform:latest
+  script:
+    - cd $TF_ROOT
+    - terraform init
+    - terraform fmt -check
+    - terraform validate
+  only:
+    - main
+
+terraform_plan:
+  stage: terraform_plan
+  image: hashicorp/terraform:latest
+  script:
+    - cd $TF_ROOT
+    - terraform init
+    - terraform plan -out=tfplan
+  artifacts:
+    paths:
+      - infra/terraform/azure/tfplan
+  only:
+    - main
+
+terraform_apply:
+  stage: terraform_apply
+  image: hashicorp/terraform:latest
+  script:
+    - cd $TF_ROOT
+    - terraform init
+    - terraform apply -auto-approve tfplan
+  dependencies:
+    - terraform_plan
+  when: manual
+  only:
+    - main
+
+ansible_check:
+  stage: ansible_check
+  image: python:3.11
+  before_script:
+    - pip install ansible ansible-lint
+  script:
+    - cd $ANSIBLE_ROOT
+    - ansible-lint site.yml || true
+    - ansible-playbook -i inventory.ini site.yml --syntax-check
+  only:
+    - main
+
+ansible_deploy:
+  stage: ansible_deploy
+  image: python:3.11
+  before_script:
+    - apt-get update && apt-get install -y openssh-client
+    - pip install ansible
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+  script:
+    - cd $ANSIBLE_ROOT
+    - ansible-playbook -i inventory.ini site.yml
+  when: manual
+  only:
+    - main
